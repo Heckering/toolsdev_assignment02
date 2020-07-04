@@ -1,11 +1,19 @@
-import pymel.core as pmc
+import logging
 
+import pymel.core as pmc
+from pymel.core.system import Path
+
+
+log = logging.getLogger(__name__)
+patha = Path()
+"""
 def main():
+    print(pmc.ls(type='camera'))
     counter = 0
-    while(counter>=3):
+    while(counter<=3):
         cubexform, cubeshape = pmc.polyCube()
         cubexform.translateY.set(1.5+counter)
-        counter += 1
+        counter += 1"""
 
 class SceneFile(object):
     """Class used to to represent a DCC software scene file
@@ -23,11 +31,21 @@ class SceneFile(object):
 
     """
 
-    def __init__(self, dir=None, descriptor="main", version=1, ext="ma"):
-        self.dir = dir
+    def __init__(self, dir="", descriptor="main", version=1, ext="ma"):
+        self._dir = Path(dir)
         self.descriptor = descriptor
         self.version = version
         self.ext = ext
+
+    @property
+    def dir(self):
+        #print("getting")
+        return Path(self._dir)
+
+    @dir.setter
+    def dir(self, arg):
+        #print("setting")
+        self._dir = Path(arg)
 
     def basename(self):
         """Return a scene file name.
@@ -53,7 +71,7 @@ class SceneFile(object):
             Path: The path to the scene file.
 
         """
-        pass
+        return Path(self.dir) / self.basename()
 
     def save(self):
         """Saves the scene file.
@@ -62,8 +80,14 @@ class SceneFile(object):
             Path: The path to the scene file if successful, None, otherwise.
 
         """
-        scenepath = "D:\\C:\\Users\\blake\\OneDrive\\Documents\\toolsdev\\toolsdev_assignment02\\assignment2_save\\"
-        pmc.system.saveAS(scenepath+self.basename())
+        #scenepath = "C:\\Users\\blake\\OneDrive\\Documents\\toolsdev\\toolsdev_assignment02\\assignment2_save\\"
+        try:
+            pmc.system.saveAs(self.path())
+        except RuntimeError:
+            log.warning("Missing Directories. Creating new directories")
+            self.dir.makedirs_p()
+            pmc.system.saveAs(self.path())
+
 
     def increment_and_save(self):
         """Increments the version and saves the scene file.

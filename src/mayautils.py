@@ -1,7 +1,7 @@
 import logging
 
 import pymel.core as pmc
-from pymel.core.system import Path
+from pymel.core.system import Path, FileReference
 
 
 log = logging.getLogger(__name__)
@@ -32,6 +32,8 @@ class SceneFile(object):
     """
 
     def __init__(self, dir="", descriptor="main", version=1, ext="ma"):
+        #how do I find the open file
+        
         self._dir = Path(dir)
         self.descriptor = descriptor
         self.version = version
@@ -40,6 +42,7 @@ class SceneFile(object):
     @property
     def dir(self):
         #print("getting")
+        #print(Path(self._dir))
         return Path(self._dir)
 
     @dir.setter

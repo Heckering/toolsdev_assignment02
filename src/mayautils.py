@@ -90,6 +90,17 @@ class SceneFile(object):
 
 
     def increment_and_save(self):
+        #How do I find current newest version?
+        self.version += 1
+        print(self.version)
+        try:
+            pmc.system.saveAs(self.path())
+            return self.path()
+        except RuntimeError:
+            log.warning("Missing Directories. Creating new directories")
+            self.dir.makedirs_p()
+            pmc.system.saveAs(self.path())
+            return self.path()
         """Increments the version and saves the scene file.
 
         If existing versions of a file already exist, it should increment 
@@ -98,4 +109,4 @@ class SceneFile(object):
         Returns:
             Path: The path to the scene file if successful, None, otherwise.
         """
-        pass
+        

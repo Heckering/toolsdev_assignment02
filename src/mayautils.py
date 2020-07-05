@@ -129,7 +129,7 @@ class SceneFile(object):
         splitscenepath = str(scenepath).split("/")
         splitscenepath.pop()
         for location in splitscenepath:
-            filepath += location + "\\"
+            filepath += location + "\\\\"
         print(filepath)
         return filepath
     
@@ -142,9 +142,11 @@ class SceneFile(object):
     def isolate_version(self):
         filename = self.isolate_filename()[0]
         splitfilename = filename.split(".")[0]
-        version = splitfilename.split("_")[-1:]
-        print(version[0])
-        return version[0]
+        versionList = splitfilename.split("_")[-1:]
+        version = versionList[0]
+        intversion = int(version)
+        print(intversion)
+        return intversion
 
     def isolate_descriptor(self):
         filename = self.isolate_filename()[0]

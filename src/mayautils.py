@@ -1,7 +1,7 @@
 import logging
 
 import pymel.core as pmc
-from pymel.core.system import Path, FileReference
+from pymel.core.system import Path
 
 
 log = logging.getLogger(__name__)
@@ -33,11 +33,16 @@ class SceneFile(object):
 
     def __init__(self, dir="", descriptor="main", version=1, ext="ma"):
         #how do I find the open file
-        
-        self._dir = Path(dir)
-        self.descriptor = descriptor
-        self.version = version
-        self.ext = ext
+        try:
+            self._dir = self.isolate_filepath()
+            self.descriptor = self.isolate_descriptor()
+            self.version = self.isolate_version()
+            self.ext = self.isolate_ext()
+        except Exception:
+            self._dir = Path(dir)
+            self.descriptor = descriptor
+            self.version = version
+            self.ext = ext
 
     @property
     def dir(self):
@@ -113,3 +118,36 @@ class SceneFile(object):
             Path: The path to the scene file if successful, None, otherwise.
         """
         
+    def isolate_filename(self):
+        scenepath = pmc.system.sceneName() #this works, but how to I seperate the string into attributes
+        filename = str(scenepath).split("/")[-1:]
+        return filename
+        
+    def isolate_filepath(self):
+        filepath = ""
+        scenepath = pmc.system.sceneName() 
+        splitscenepath = str(scenepath).split("/")
+        splitscenepath.pop()
+        for location in splitscenepath:
+            filepath += location + "\\"
+        print(filepath)
+        return filepath
+    
+    def isolate_ext(self):
+        filename = self.isolate_filename()[0]
+        ext = filename.split(".")[-1:]
+        print(ext[0])
+        return ext[0]
+
+    def isolate_version(self):
+        filename = self.isolate_filename()[0]
+        splitfilename = filename.split(".")[0]
+        version = splitfilename.split("_")[-1:]
+        print(version[0])
+        return version[0]
+
+    def isolate_descriptor(self):
+        filename = self.isolate_filename()[0]
+        main = filename.split("_")[0]
+        print(main)
+        return main
